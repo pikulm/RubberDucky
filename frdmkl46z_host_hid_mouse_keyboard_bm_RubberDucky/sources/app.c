@@ -208,7 +208,7 @@ static void USB_HostApplicationInit(void)
 
     usb_echo("host init done\r\n");
 }
-
+// testing using git
 int main(void)
 {
     BOARD_InitPins();
