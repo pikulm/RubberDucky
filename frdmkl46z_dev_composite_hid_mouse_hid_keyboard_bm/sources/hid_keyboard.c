@@ -85,6 +85,10 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
     static uint8_t dir = DOWN;
 
     s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
+    s_UsbDeviceHidKeyboard.buffer[4] = 0x00U;
+    s_UsbDeviceHidKeyboard.buffer[6] = 0x00U;
+    s_UsbDeviceHidKeyboard.buffer[7] = 0x00U;
+
     switch (dir)
     {
         case DOWN:
@@ -108,11 +112,53 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
             x--;
             if (x < 1U)
             {
-                dir = DOWN;
+            	dir = NEXT;
                 s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_T;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_ENTER;
+                break;
             }
-            break;
+            if (x < 5U)
+            {
+            	dir = NEXT;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_DOT_GREATER;
+                break;
+            }
+            if (x < 7U)
+            {
+            	dir = NEXT;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
+                break;
+            }
+            if (x < 10U)
+            {
+            	dir = NEXT;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_DOT_GREATER;
+                break;
+            }
+            if (x < 15U)
+            {
+            	dir = NEXT;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_SPACEBAR;
+                break;
+            }
+            if (x < 20U)
+            {
+            	dir = NEXT;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_D;
+                break;
+            }
+            if (x < 25U)
+            {
+            	dir = NEXT;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_C;
+                break;
+            }
         default:
             break;
     }
