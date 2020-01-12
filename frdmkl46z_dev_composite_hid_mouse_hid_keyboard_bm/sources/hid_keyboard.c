@@ -68,13 +68,19 @@ static usb_device_hid_keyboard_struct_t s_UsbDeviceHidKeyboard;
  * Code
  ******************************************************************************/
 
+/**
+ * TODO: this function needs to be edited to do something cool
+ * @return
+ */
+
 static usb_status_t USB_DeviceHidKeyboardAction(void)
 {
     static int x = 0U;
     enum
     {
         DOWN,
-        UP
+        UP,
+		NEXT
     };
     static uint8_t dir = DOWN;
 
@@ -86,15 +92,25 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
             if (x > 200U)
             {
                 dir++;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_PAGEUP;
+                s_UsbDeviceHidKeyboard.buffer[0] = MODIFERKEYS_LEFT_GUI;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_SPACEBAR;
             }
             break;
         case UP:
+            x++;
+            if (x > 400U)
+            {
+                dir++;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_T;
+            }
+            break;
+        case NEXT:
             x--;
             if (x < 1U)
             {
                 dir = DOWN;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_PAGEDOWN;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_T;
             }
             break;
         default:
