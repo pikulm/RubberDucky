@@ -78,11 +78,11 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
     static int x = 0U;
     enum
     {
-        DOWN,
-        UP,
-		NEXT
+        SPOTLIGHT_SEARCH,
+        ENTERING_TERMINAL,
+		WRITING
     };
-    static uint8_t dir = DOWN;
+    static uint8_t dir = SPOTLIGHT_SEARCH;
 
     s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
     s_UsbDeviceHidKeyboard.buffer[4] = 0x00U;
@@ -91,74 +91,154 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
 
     switch (dir)
     {
-        case DOWN:
+        case SPOTLIGHT_SEARCH:
             x++;
-            if (x > 200U)
+            if (x > 1000U)
             {
                 dir++;
                 s_UsbDeviceHidKeyboard.buffer[0] = MODIFERKEYS_LEFT_GUI;
                 s_UsbDeviceHidKeyboard.buffer[2] = KEY_SPACEBAR;
             }
             break;
-        case UP:
+        case ENTERING_TERMINAL:
             x++;
-            if (x > 400U)
+            if (x > 1100U)
             {
                 dir++;
                 s_UsbDeviceHidKeyboard.buffer[2] = KEY_T;
             }
             break;
-        case NEXT:
+        case WRITING:
             x--;
             if (x < 1U)
             {
-            	dir = NEXT;
+            	dir = WRITING;
                 s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
                 s_UsbDeviceHidKeyboard.buffer[2] = KEY_ENTER;
                 break;
             }
             if (x < 5U)
             {
-            	dir = NEXT;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_DOT_GREATER;
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_G;
                 break;
             }
             if (x < 7U)
             {
-            	dir = NEXT;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_P;
                 break;
             }
             if (x < 10U)
             {
-            	dir = NEXT;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_DOT_GREATER;
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_J;
                 break;
             }
             if (x < 15U)
             {
-            	dir = NEXT;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_SPACEBAR;
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_DOT_GREATER;
                 break;
             }
             if (x < 20U)
             {
-            	dir = NEXT;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_D;
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_Q;
                 break;
             }
             if (x < 25U)
             {
-            	dir = NEXT;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_SPACEBAR;
+                break;
+            }
+            if (x < 30U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_E;
+                break;
+            }
+            if (x < 35U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_R;
+                break;
+            }
+            if (x < 40U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_U;
+                break;
+            }
+            if (x < 50U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_T;
+                break;
+            }
+            if (x < 55U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_P;
+                break;
+            }
+            if (x < 60U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_A;
+                break;
+            }
+            if (x < 65U)
+            {
+            	dir = WRITING;
                 s_UsbDeviceHidKeyboard.buffer[2] = KEY_C;
                 break;
             }
+            if (x < 70U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_N;
+                break;
+            }
+            if (x < 75U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_E;
+                break;
+            }
+            if (x < 80U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
+                break;
+            }
+            if (x < 85U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_E;
+                break;
+            }
+            if (x < 90U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_R;
+                break;
+            }
+            if (x < 95U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_C;
+                break;
+            }
+            if (x < 100U)
+            {
+            	dir = WRITING;
+                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+                s_UsbDeviceHidKeyboard.buffer[2] = KEY_S;
+                break;
+            }
+
         default:
             break;
     }
