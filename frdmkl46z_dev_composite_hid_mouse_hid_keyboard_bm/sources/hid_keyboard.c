@@ -49,7 +49,14 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
+typedef struct key_struct
+{
+	uint8_t modifier;
+	uint8_t key;
+} key_struct_t ;
 
+#define KEY_TAB_LENGHT 100
+#define ITERATIONS_TO_WAIT 10
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -75,175 +82,37 @@ static usb_device_hid_keyboard_struct_t s_UsbDeviceHidKeyboard;
 
 static usb_status_t USB_DeviceHidKeyboardAction(void)
 {
-    static int x = 0U;
-    enum
-    {
-        SPOTLIGHT_SEARCH,
-        ENTERING_TERMINAL,
-		WRITING
-    };
-    static uint8_t dir = SPOTLIGHT_SEARCH;
+	//inicjalizing the table of characters
+	key_struct_t key_tab[KEY_TAB_LENGHT] = {{0,0}};
+	//writing own characters
+	key_tab[0].modifier = MODIFERKEYS_LEFT_GUI; key_tab[0].key = KEY_SPACEBAR;
+	key_tab[1].key = KEY_T;
+	key_tab[2].key = KEY_E;
+	key_tab[3].key = KEY_R;
+	key_tab[4].key = KEY_ENTER;
 
-    s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
-    s_UsbDeviceHidKeyboard.buffer[4] = 0x00U;
-    s_UsbDeviceHidKeyboard.buffer[6] = 0x00U;
-    s_UsbDeviceHidKeyboard.buffer[7] = 0x00U;
+	static uint8_t key_tab_index = 0;
+	static uint16_t counter = 0U;
 
-    switch (dir)
-    {
-        case SPOTLIGHT_SEARCH:
-            x++;
-            if (x > 1000U)
-            {
-                dir++;
-                s_UsbDeviceHidKeyboard.buffer[0] = MODIFERKEYS_LEFT_GUI;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_SPACEBAR;
-            }
-            break;
-        case ENTERING_TERMINAL:
-            x++;
-            if (x > 1100U)
-            {
-                dir++;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_T;
-            }
-            break;
-        case WRITING:
-            x--;
-            if (x < 1U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_ENTER;
-                break;
-            }
-            if (x < 5U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_G;
-                break;
-            }
-            if (x < 7U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_P;
-                break;
-            }
-            if (x < 10U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_J;
-                break;
-            }
-            if (x < 15U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_DOT_GREATER;
-                break;
-            }
-            if (x < 20U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_Q;
-                break;
-            }
-            if (x < 25U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_SPACEBAR;
-                break;
-            }
-            if (x < 30U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_E;
-                break;
-            }
-            if (x < 35U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_R;
-                break;
-            }
-            if (x < 40U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_U;
-                break;
-            }
-            if (x < 50U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_T;
-                break;
-            }
-            if (x < 55U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_P;
-                break;
-            }
-            if (x < 60U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_A;
-                break;
-            }
-            if (x < 65U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_C;
-                break;
-            }
-            if (x < 70U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_N;
-                break;
-            }
-            if (x < 75U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_E;
-                break;
-            }
-            if (x < 80U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
-                break;
-            }
-            if (x < 85U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_E;
-                break;
-            }
-            if (x < 90U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_R;
-                break;
-            }
-            if (x < 95U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_C;
-                break;
-            }
-            if (x < 100U)
-            {
-            	dir = WRITING;
-                s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
-                s_UsbDeviceHidKeyboard.buffer[2] = KEY_S;
-                break;
-            }
+	//setting default values to send (nothing to send)
+	s_UsbDeviceHidKeyboard.buffer[0] = 0x00U;
+	s_UsbDeviceHidKeyboard.buffer[2] = 0x00U;
 
-        default:
-            break;
-    }
-    return USB_DeviceHidSend(s_UsbDeviceComposite->hidKeyboardHandle, USB_HID_KEYBOARD_ENDPOINT_IN,
-                             s_UsbDeviceHidKeyboard.buffer, USB_HID_KEYBOARD_REPORT_LENGTH);
+	//waiting between sending our characters
+	counter++;
+	if (counter == ITERATIONS_TO_WAIT) {
+		s_UsbDeviceHidKeyboard.buffer[0] = key_tab[key_tab_index].modifier;
+		s_UsbDeviceHidKeyboard.buffer[2] = key_tab[key_tab_index].key;
+		key_tab_index++;
+		counter = 0;
+	}
+	//making program working in a loop
+	if (key_tab_index >= KEY_TAB_LENGHT) {
+		key_tab_index = 0;
+	}
+	//key stroke
+	return USB_DeviceHidSend(s_UsbDeviceComposite->hidKeyboardHandle, USB_HID_KEYBOARD_ENDPOINT_IN,
+	                             s_UsbDeviceHidKeyboard.buffer, USB_HID_KEYBOARD_REPORT_LENGTH);
 }
 
 usb_status_t USB_DeviceHidKeyboardCallback(class_handle_t handle, uint32_t event, void *param)
