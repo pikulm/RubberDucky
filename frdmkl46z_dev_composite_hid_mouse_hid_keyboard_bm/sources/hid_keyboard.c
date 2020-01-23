@@ -59,6 +59,8 @@ typedef struct key_struct
 #define ITERATIONS_TO_WAIT 10
 
 static enum operation typeOfExecutedOperation = none;
+
+static uint8_t key_tab_index = 0;
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -78,12 +80,11 @@ static usb_device_hid_keyboard_struct_t s_UsbDeviceHidKeyboard;
  ******************************************************************************/
 void askToSendMail (void) {
 	typeOfExecutedOperation = mail;
+	key_tab_index = 0;
 }
 void askToPrintscreen (void) {
 	typeOfExecutedOperation = printscreen;
-}
-void askToStayIdle (void) {
-	typeOfExecutedOperation = none;
+	key_tab_index = 0;
 }
 
 static usb_status_t USB_DeviceHidKeyboardAction(void)
@@ -93,6 +94,7 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
 
 	//writing own characters
 	switch (typeOfExecutedOperation) {
+	/* TODO 1 implementing keys for sending an email */
 	case mail:
 		key_tab[0].modifier = MODIFERKEYS_LEFT_GUI; key_tab[0].key = KEY_SPACEBAR;
 		key_tab[1].key = KEY_T;
@@ -100,13 +102,19 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
 		key_tab[3].key = KEY_R;
 		key_tab[4].key = KEY_ENTER;
 		break;
+	/* TODO 2 implementing keys for taking printscreen */
 	case printscreen:
+		key_tab[0].modifier = MODIFERKEYS_LEFT_GUI; key_tab[0].key = KEY_SPACEBAR;
+		key_tab[1].key = KEY_C;
+		key_tab[2].key = KEY_A;
+		key_tab[3].key = KEY_L;
+		key_tab[4].key = KEY_E;
+		key_tab[5].key = KEY_ENTER;
 		break;
 	case none:
 		break;
 	}
 
-	static uint8_t key_tab_index = 0;
 	static uint16_t counter = 0U;
 
 	//setting default values to send (nothing to send)
@@ -124,6 +132,7 @@ static usb_status_t USB_DeviceHidKeyboardAction(void)
 	//making program working in a loop
 	if (key_tab_index >= KEY_TAB_LENGHT) {
 		key_tab_index = 0;
+		typeOfExecutedOperation = none;
 	}
 	//key stroke
 	return USB_DeviceHidSend(s_UsbDeviceComposite->hidKeyboardHandle, USB_HID_KEYBOARD_ENDPOINT_IN,

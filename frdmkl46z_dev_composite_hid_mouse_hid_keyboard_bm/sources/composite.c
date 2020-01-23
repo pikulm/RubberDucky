@@ -450,11 +450,14 @@ void main(void)
 	TSI_EnableModule(TSI0, true);
 	LPTMR_StartTimer(LPTMR0); /* Start LPTMR triggering */
 
+	//setting default operation to doing nothing
+	typeOfOperation = none;
 
 	while (1U) {
 #if USB_DEVICE_CONFIG_USE_TASK
 		USB_DeviceTaskFn(g_UsbDeviceComposite.deviceHandle);
 #endif
+
 		if (shouldToggleTsiChannel == true) {
 			shouldToggleTsiChannel = false;
 			TSI_EnableModule(TSI0, false);
@@ -468,12 +471,11 @@ void main(void)
 
 		if (typeOfOperation == mail) {
 			askToSendMail();
+			typeOfOperation = none;
 		}
 		else if (typeOfOperation == printscreen) {
 			askToPrintscreen();
-		}
-		else {
-			askToStayIdle();
+			typeOfOperation = none;
 		}
 	}
 }
