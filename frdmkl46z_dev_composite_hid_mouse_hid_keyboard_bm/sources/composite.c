@@ -87,6 +87,8 @@
 
 volatile uint8_t shouldToggleTsiChannel = false;
 
+enum operation typeOfOperation = none;
+
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -343,20 +345,21 @@ static void USB_DeviceApplicationInit(void) {
 	/* Start the device function */
 	USB_DeviceRun(g_UsbDeviceComposite.deviceHandle);
 }
+/* TODO 2 Setting the wanted operation depending on the touched side */
 
 void TSI0_IRQHandler(void) {
 	if (TSI_GetMeasuredChannelNumber(TSI0) == BOARD_TSI_ELECTRODE_2) {
 		if (TSI_GetCounter(TSI0)
 				> (uint16_t) (buffer.calibratedData[BOARD_TSI_ELECTRODE_2]
-						+ TOUCH_DELTA_VALUE)) {
-			LED_RED_TOGGLE(); /* Toggle the touch event indicating LED */
+						+ TOUCH_DELTA_VALUE)) { /* we are on the right side of the touch slider */
+			LED_GREEN_TOGGLE(); /* Toggle the touch event indicating LED */
 		}
 	}
 	if (TSI_GetMeasuredChannelNumber(TSI0) == BOARD_TSI_ELECTRODE_1) {
 		if (TSI_GetCounter(TSI0)
 				> (uint16_t) (buffer.calibratedData[BOARD_TSI_ELECTRODE_1]
-						+ TOUCH_DELTA_VALUE)) {
-			LED_GREEN_TOGGLE(); /* Toggle the touch event indicating LED */
+						+ TOUCH_DELTA_VALUE)) { /* we are on the left side of the touch slider */
+			LED_RED_TOGGLE(); /* Toggle the touch event indicating LED */
 		}
 	}
 
@@ -445,6 +448,8 @@ void main(void)
 	TSI_SetMeasuredChannelNumber(TSI0, BOARD_TSI_ELECTRODE_2);
 	TSI_EnableModule(TSI0, true);
 	LPTMR_StartTimer(LPTMR0); /* Start LPTMR triggering */
+
+/*TODO 3 Execute the requested operation (i.e., printscreen or send mail) */
 
 	while (1U) {
 #if USB_DEVICE_CONFIG_USE_TASK

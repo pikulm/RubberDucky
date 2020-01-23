@@ -39,6 +39,12 @@
  * Definitions
  ******************************************************************************/
 
+enum operation {
+	printscreen,
+	mail,
+	none
+};
+
 typedef struct _usb_device_hid_keyboard_struct
 {
     uint8_t *buffer;
@@ -286,3 +292,4 @@ extern usb_status_t USB_DeviceHidKeyboardSetInterface(class_handle_t handle,
                                                       uint8_t alternateSetting);
 
 #endif /* __USB_DEVICE_HID_KEYBOARD_H__ */
+
