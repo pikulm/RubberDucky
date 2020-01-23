@@ -450,7 +450,6 @@ void main(void)
 	TSI_EnableModule(TSI0, true);
 	LPTMR_StartTimer(LPTMR0); /* Start LPTMR triggering */
 
-	/*TODO 3 Execute the requested operation (i.e., printscreen or send mail) */
 
 	while (1U) {
 #if USB_DEVICE_CONFIG_USE_TASK
@@ -465,6 +464,16 @@ void main(void)
 				TSI_SetMeasuredChannelNumber(TSI0, BOARD_TSI_ELECTRODE_2);
 			}
 			TSI_EnableModule(TSI0, true);
+		}
+
+		if (typeOfOperation == mail) {
+			askToSendMail();
+		}
+		else if (typeOfOperation == printscreen) {
+			askToPrintscreen();
+		}
+		else {
+			askToStayIdle();
 		}
 	}
 }

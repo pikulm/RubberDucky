@@ -57,6 +57,8 @@ typedef struct key_struct
 
 #define KEY_TAB_LENGHT 100
 #define ITERATIONS_TO_WAIT 10
+
+static enum operation typeOfExecutedOperation = none;
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -74,22 +76,35 @@ static usb_device_hid_keyboard_struct_t s_UsbDeviceHidKeyboard;
 /*******************************************************************************
  * Code
  ******************************************************************************/
-
-/**
- * TODO: this function needs to be edited to do something cool
- * @return
- */
+void askToSendMail (void) {
+	typeOfExecutedOperation = mail;
+}
+void askToPrintscreen (void) {
+	typeOfExecutedOperation = printscreen;
+}
+void askToStayIdle (void) {
+	typeOfExecutedOperation = none;
+}
 
 static usb_status_t USB_DeviceHidKeyboardAction(void)
 {
 	//inicjalizing the table of characters
 	key_struct_t key_tab[KEY_TAB_LENGHT] = {{0,0}};
+
 	//writing own characters
-	key_tab[0].modifier = MODIFERKEYS_LEFT_GUI; key_tab[0].key = KEY_SPACEBAR;
-	key_tab[1].key = KEY_T;
-	key_tab[2].key = KEY_E;
-	key_tab[3].key = KEY_R;
-	key_tab[4].key = KEY_ENTER;
+	switch (typeOfExecutedOperation) {
+	case mail:
+		key_tab[0].modifier = MODIFERKEYS_LEFT_GUI; key_tab[0].key = KEY_SPACEBAR;
+		key_tab[1].key = KEY_T;
+		key_tab[2].key = KEY_E;
+		key_tab[3].key = KEY_R;
+		key_tab[4].key = KEY_ENTER;
+		break;
+	case printscreen:
+		break;
+	case none:
+		break;
+	}
 
 	static uint8_t key_tab_index = 0;
 	static uint16_t counter = 0U;
